@@ -16,6 +16,7 @@ import br.com.vr.autorizador.exception.NumeroDeCartaoEmUsoException;
 import br.com.vr.autorizador.exception.SaldoInsuficienteException;
 import br.com.vr.autorizador.exception.SenhaInvalidaException;
 import br.com.vr.autorizador.model.Cartao;
+import br.com.vr.autorizador.repository.CartoesRepository;
 
 @Service
 @Transactional
