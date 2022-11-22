@@ -17,6 +17,9 @@ import br.com.vr.autorizador.exception.SenhaInvalidaException;
 import br.com.vr.autorizador.service.CartoesService;
 import br.com.vr.autorizador.values.TransacaoEnum;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping("/transacoes")
@@ -27,6 +30,11 @@ public class TransacoesController {
 	private CartoesService cartoesService;
 	
 	@PostMapping
+	@ApiOperation(value = "Executa transação", notes = "Debita o saldo do cartão, caso seja possível.")
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "Caso a transação tenha sido executada com sucesso"),
+        @ApiResponse(code = 422, message = "Caso a transação não tenha sido executada")
+    })
 	public ResponseEntity<Object> executaTransacao(@RequestBody @Valid TransacaoRequest request) {
 		try {
 			cartoesService.debita(request);

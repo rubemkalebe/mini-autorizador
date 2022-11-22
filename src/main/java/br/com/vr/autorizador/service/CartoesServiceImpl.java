@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.vr.autorizador.dto.request.TransacaoRequest;
 import br.com.vr.autorizador.exception.CartaoInexistenteException;
@@ -17,6 +18,7 @@ import br.com.vr.autorizador.exception.SenhaInvalidaException;
 import br.com.vr.autorizador.model.Cartao;
 
 @Service
+@Transactional
 public class CartoesServiceImpl implements CartoesService {
 
 	@Autowired
