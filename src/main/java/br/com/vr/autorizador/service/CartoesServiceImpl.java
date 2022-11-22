@@ -3,11 +3,17 @@ package br.com.vr.autorizador.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.vr.autorizador.dto.request.TransacaoRequest;
+import br.com.vr.autorizador.exception.CartaoInexistenteException;
 import br.com.vr.autorizador.exception.NumeroDeCartaoEmUsoException;
+import br.com.vr.autorizador.exception.SaldoInsuficienteException;
+import br.com.vr.autorizador.exception.SenhaInvalidaException;
 import br.com.vr.autorizador.model.Cartao;
 
 @Service
@@ -35,6 +41,32 @@ public class CartoesServiceImpl implements CartoesService {
 	@Override
 	public Cartao findByNumero(String numero) {
 		return cartoesRepository.findByNumero(numero);
+	}
+
+	@Override
+	public Cartao debita(@Valid TransacaoRequest request) throws CartaoInexistenteException, SenhaInvalidaException, SaldoInsuficienteException {
+		Cartao cartao = findByNumero(request.getNumeroCartao());
+		
+		if(cartao == null) {
+			throw new CartaoInexistenteException();
+		}
+		
+		if(!validaSenha(cartao, request.getSenha())) {
+			throw new SenhaInvalidaException();
+		}
+		
+		if(request.getValor().compareTo(cartao.getSaldo()) == 1) {
+			throw new SaldoInsuficienteException();
+		}
+		
+		cartao.setSaldo(cartao.getSaldo().subtract(request.getValor()));
+		
+		return cartoesRepository.save(cartao);
+	}
+
+	@Override
+	public boolean validaSenha(Cartao cartao, String senha) {
+		return passwordEncoder.matches(senha, cartao.getSenha());
 	}
 
 }
