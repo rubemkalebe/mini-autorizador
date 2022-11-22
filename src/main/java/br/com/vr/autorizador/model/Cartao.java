@@ -1,6 +1,7 @@
 package br.com.vr.autorizador.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -42,5 +43,8 @@ public class Cartao implements Serializable {
 	
 	@Column(name = "car_data_criacao")
 	private LocalDateTime dataCriacao;
+	
+	@Column(name = "car_saldo")
+	private BigDecimal saldo;
 
 }

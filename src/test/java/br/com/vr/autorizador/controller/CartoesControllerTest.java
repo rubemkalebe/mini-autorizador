@@ -2,6 +2,7 @@ package br.com.vr.autorizador.controller;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.apache.http.HttpStatus;
@@ -79,6 +80,7 @@ public class CartoesControllerTest extends MiniAutorizadorApplicationTests {
 		// valida persistencia
 		Cartao found = cartoesService.findByNumero("6549873025634501"); 
 		assertNotEquals("1234", found.getSenha());
+		assertEquals("500.00", found.getSaldo().toPlainString()); // todo cartao deve ser criado com saldo inicial de 500.00
 	}
 	
 	@Test
@@ -98,13 +100,13 @@ public class CartoesControllerTest extends MiniAutorizadorApplicationTests {
 	public void obtemSaldoDeCartao() {
 		String numeroCartao = "4501256387306549";
 		
-		given()
-		.when()
-			.get("/cartoes/" + numeroCartao)
-		.then()
-			.assertThat()
-				.statusCode(HttpStatus.SC_OK)
-				.body("", equalTo(495.15));
+		
+		String saldo = given()
+				.when()
+					.get("/cartoes/" + numeroCartao)
+					.asString();
+		
+		assertEquals("495.15", saldo);
 	}
 	
 }

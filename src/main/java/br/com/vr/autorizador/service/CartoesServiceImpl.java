@@ -1,5 +1,6 @@
 package br.com.vr.autorizador.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class CartoesServiceImpl implements CartoesService {
 		}
 		
 		cartao.setDataCriacao(LocalDateTime.now());
+		cartao.setSaldo(BigDecimal.valueOf(500.00)); // todo cartao deve ser criado com saldo inicial de 500.00
 		cartao.setSenha(passwordEncoder.encode(cartao.getSenha())); // criptografa senha antes de persistir
 		
 		return cartoesRepository.save(cartao);
