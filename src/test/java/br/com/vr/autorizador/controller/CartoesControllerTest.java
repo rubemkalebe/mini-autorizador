@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ public class CartoesControllerTest extends MiniAutorizadorApplicationTests {
 	private CartoesService cartoesService;
 	
 	@Test
+	@Order(1)
 	public void tentaCriarNovoCartaoSemNumero() {
 		NovoCartaoRequest request = NovoCartaoRequest.builder()
 				.senha("1234")
@@ -41,6 +43,7 @@ public class CartoesControllerTest extends MiniAutorizadorApplicationTests {
 	}
 	
 	@Test
+	@Order(2)
 	public void tentaCriarNovoCartaoSemSenha() {
 		NovoCartaoRequest request = NovoCartaoRequest.builder()
 				.numeroCartao("6549873025634501")
@@ -58,6 +61,7 @@ public class CartoesControllerTest extends MiniAutorizadorApplicationTests {
 	}
 	
 	@Test
+	@Order(3)
 	public void criarNovoCartao() {
 		NovoCartaoRequest request = NovoCartaoRequest.builder()
 				.numeroCartao("6549873025634501")
@@ -84,6 +88,29 @@ public class CartoesControllerTest extends MiniAutorizadorApplicationTests {
 	}
 	
 	@Test
+	@Order(4)
+	public void tentaCriarCartaoComMesmoNumero() {
+		NovoCartaoRequest request = NovoCartaoRequest.builder()
+				.numeroCartao("6549873025634501")
+				.senha("1234")
+				.build();
+		
+		// valida requisicao
+		given()
+			.contentType(ContentType.JSON)
+			.body(request)
+			.accept(ContentType.JSON)
+		.when()
+			.post("/cartoes")
+		.then()
+			.assertThat()
+				.statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY)
+				.body("numeroCartao", equalTo("6549873025634501"))
+				.body("senha", equalTo("1234"));
+	}
+	
+	@Test
+	@Order(5)
 	public void tentaObterSaldoMasCartaoInexistente() {
 		String numeroCartao = "4501256387306548";
 		
@@ -97,6 +124,7 @@ public class CartoesControllerTest extends MiniAutorizadorApplicationTests {
 	}
 	
 	@Test
+	@Order(6)
 	public void obtemSaldoDeCartao() {
 		String numeroCartao = "4501256387306549";
 		
