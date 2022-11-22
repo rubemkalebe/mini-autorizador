@@ -81,4 +81,30 @@ public class CartoesControllerTest extends MiniAutorizadorApplicationTests {
 		assertNotEquals("1234", found.getSenha());
 	}
 	
+	@Test
+	public void tentaObterSaldoMasCartaoInexistente() {
+		String numeroCartao = "4501256387306548";
+		
+		given()
+			.accept(ContentType.JSON)
+		.when()
+			.get("/cartoes/" + numeroCartao)
+		.then()
+			.assertThat()
+				.statusCode(HttpStatus.SC_NOT_FOUND);
+	}
+	
+	@Test
+	public void obtemSaldoDeCartao() {
+		String numeroCartao = "4501256387306549";
+		
+		given()
+		.when()
+			.get("/cartoes/" + numeroCartao)
+		.then()
+			.assertThat()
+				.statusCode(HttpStatus.SC_OK)
+				.body("", equalTo(495.15));
+	}
+	
 }
